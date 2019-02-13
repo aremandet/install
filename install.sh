@@ -72,6 +72,24 @@ fi
 sudo sed -i "s/.*Port.*/Port $ssh_port/" /etc/ssh/sshd_config
 sudo /etc/init.d/ssh restart
 
+# Installation de paquets
+sudo apt-get install vim
+
+# Configuration de git
+echo "Configuration de git"
+echo -e "$couleur_jaune_gras""Utilisateur git :""$couleur_normal"
+read git_username
+echo -e "$couleur_jaune_gras""Email utilisateur git :""$couleur_normal"
+read git_email_username
+git config --global user.name "$git_username"
+git config --global user.email "$git_email_username"
+git config --global core.editor "vim"
+
+
 #sudo reboot
 #cd ~Documents
-#git clone https://github.com/aremandet/domotic_sensor
+#git clone https://github.com/aremandet/rpi_3_bp_domotic_sensor
+
+#git config --global user.name anthony
+#git config --global user.email aremandet@live.fr
+#git config --global core.editor "vim"
