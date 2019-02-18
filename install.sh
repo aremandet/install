@@ -32,13 +32,23 @@ echo -e -n "$couleur_jaune_gras"
 sudo passwd root
 echo -e -n "$couleur_normal"
 
+# Suppresion du programme de bienvenue: piwiz
+echo "Suppresion du programme de bienvenue: piwiz"
+if [ ! -f /etc/xdg/autostart/piwiz.desktop.sauv ]; then
+	sudo mv /etc/xdg/autostart/piwiz.desktop /etc/xdg/autostart/piwiz.desktop.sauv
+fi
+
 # Configuration de la timezone
 echo "Configuration de la timezone"
 sudo rm /etc/localtime 2>/dev/null
 sudo ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
-sudo rm /etc/timezone 2>/dev/null
+sudo rm /etc/timezone 2>/dev/null/st
+
 # Configuration de l'adresse IP 
 echo "Configuration de l'adresse IP $ip"
+# désactivation du service dhcp au démarrage
+sudo systemctl stop service dhcpd.service
+sudo systemctl disable service dhcpd.service
 if [ ! -f /etc/network/interfaces.sauv ]; then
 	sudo mv /etc/network/interfaces /etc/network/interfaces.sauv
 fi
@@ -72,7 +82,17 @@ fi
 sudo sed -i "s/.*Port.*/Port $ssh_port/" /etc/ssh/sshd_config
 sudo /etc/init.d/ssh restart
 
+# Mise à jour du système
+echo "Mise à jour du système"
+sudo apt-get update 
+sudo apt-get upgrade
+
+# Mise à jour du microcode
+echo "Mise à jour du microcode"
+sudo rpi-update
+
 # Installation de paquets
+echo "Installation de paquets"
 sudo apt-get install vim
 
 # Configuration de git
