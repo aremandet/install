@@ -26,10 +26,17 @@ echo "Configuration du clavier"
 sudo setxkbmap fr
 sudo sed -i "s/^XKBLAYOUT=.*/XKBLAYOUT="fr"/" /etc/default/keyboard
 
+
 # Configuration du password root
 echo "Configuration du password root"
 echo -e -n "$couleur_jaune_gras"
 sudo passwd root
+echo -e -n "$couleur_normal"
+
+# Configuration du password pi
+echo "Configuration du password pi"
+echo -e -n "$couleur_jaune_gras"
+sudo passwd pi
 echo -e -n "$couleur_normal"
 
 # Suppresion du programme de bienvenue: piwiz
@@ -81,19 +88,22 @@ if [ ! -f /etc/ssh/sshd_config.sauv ]; then
 fi
 sudo sed -i "s/.*Port.*/Port $ssh_port/" /etc/ssh/sshd_config
 sudo /etc/init.d/ssh restart
+sudo udapte-rc.d ssh defaults
+sudo udapte-rc.d ssh enable
+sudo systemctl enable ssh
 
-# Mise à jour du système
-echo "Mise à jour du système"
-sudo apt-get update 
-sudo apt-get upgrade
-
-# Mise à jour du microcode
-echo "Mise à jour du microcode"
-sudo rpi-update
 
 # Installation de paquets
 echo "Installation de paquets"
-sudo apt-get install vim
+sudo apt-get install vim gedit-3.22.0-2 numlockx
+
+# Configuration de l'activativation de la touche verrouillage num
+echo "Configuration de l'activativation de la touche verrouillage num"
+sudo mkdir /etc/anthony
+sudo echo "/bin/bash" > /etc/anthony/numlockx.sh
+sudo echo "numlockx on" > /etc/anthony/numlockx.sh
+sudo chmod +x /etc/anthony/numlockx.sh
+sudo echo "@reboot cd /etc/anthony && ./numlockx.sh" >> /var/spool/cron/crontabs/pi
 
 # Configuration de git
 echo "Configuration de git"
@@ -105,6 +115,23 @@ git config --global user.name "$git_username"
 git config --global user.email "$git_email_username"
 git config --global core.editor "vim"
 
+
+# Mise à jour du système
+echo "Mise à jour du système"
+echo -e "$couleur_jaune_gras""Voulez-vous mettre à jour le système ? (oui/non (par défaut))""$couleur_normal"
+read mise_a_jour
+if [ "$mise_a_jour" == "oui" ];then
+	sudo apt-get update 
+	sudo apt-get upgrade
+fi
+
+# Mise à jour du microcode
+echo "Mise à jour du microcode"
+echo -e "$couleur_jaune_gras""Voulez-vous mettre à jour le micro-code? (oui/non (par défaut))""$couleur_normal"
+read mise_a_jour_microcode
+if [ "$mise_a_jour_microcode" == "oui" ];then
+	sudo rpi-update
+fi
 
 #sudo reboot
 #cd ~Documents
