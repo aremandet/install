@@ -96,7 +96,12 @@ sudo systemctl enable ssh
 # Installation de paquets
 echo "Installation de paquets"
 sudo apt-get update 
-sudo apt-get install vim geditgedit numlockx
+sudo apt-get install vim geditgedit numlockx locale-all
+
+# Configuration du language du système
+echo "Configuration du language du système"
+sudo dpkg-reconfigure locales
+sudo dpkg-reconfigure keyboard-configuration
 
 # Configuration de l'activativation de la touche verrouillage num
 echo "Configuration de l'activativation de la touche verrouillage num"
